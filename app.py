@@ -4,20 +4,21 @@ from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
-env_path = Path('.')/'.env'
-load_dotenv(dotenv_path=env_path)
+load_dotenv()                                                   # loads enviroment variables
+env_path = Path('.')/'.env'                                     # sets enviroment path as .env file path
+load_dotenv(dotenv_path=env_path)                               # loads enviroment with new path
 
 '''maybe try to change the code to create commands with this extension: https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html'''
 
 class MyClient(discord.Client):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.command_list = {                                    # list of all available commands with descriptions
-            'k$list': 'lists all commands of KogniBot',
-            'k$hell': 'says Hello World!',
-            'k$guess': 'lets u play a simple guessing game',
-            'k$credits': 'displays credits for KogniBot creators'
+    def __init__(self, *args, **kwargs):                         # define __init__ method with all possible arguments
+        super().__init__(*args, **kwargs)                        # run discord.Client __init__ method with all arguments
+        self.command_list = {                                    # list of all available commands with descriptions (used in $command-list)
+            '$command-list': 'lists all commands of KogniBot',
+            '$hemlo': 'says Hemlo World!',
+            '$guess': 'lets u play a simple guessing game',
+            '$credits': 'displays credits for KogniBot creators',
+            '$wejsciowka': 'invites u to wejsciowka'
         }
 
 
@@ -33,21 +34,35 @@ class MyClient(discord.Client):
         if message.author.id == self.user.id:               # we do not want the bot to reply to itself
             return
 
-        if message.content.startswith('k$list'):             # command k$list
+        if message.content.startswith('$command-list'):             # command $command-list
             for x, y in self.command_list.items():
                 await message.channel.send(f'{x} - {y}')
 
-        if message.content.startswith('k$hell'):             # command k$hell
-            await message.channel.send('Hello World!')
+        if message.content.startswith('$hemlo'):             # command $hemlo
+            await message.channel.send('Hemlo World!')
 
-        if message.content.startswith('k$credits'):             # command k$credits
+        if message.content.startswith('') and message.channel.name == '👽︱kosmiczne-jaja':             # reaction to meme
+            await message.add_reaction('😂')                                                           # add a baloon face reaction
+
+        if message.content.startswith('$wejsciowka'):             # command $wejsciowka
+            await message.channel.send('SZANOWNI PAŃSTWO')
+            try:
+                await self.wait_for('message', timeout=4)         # wait 2 seconds
+            except TimeoutError:                                    # asyncio.TimeoutError
+                pass
+            finally:
+                await message.channel.send('ZAPRASZAM NA WEJŚCIÓWKĘ!')
+                await message.channel.send('https://b.socrative.com/login/student/\nW polu room name proszę wpisać ANDRZEJ5101')
+                await message.channel.send('POWODZENIA!!!')
+
+        if message.content.startswith('$credits'):             # command $credits
             await message.channel.send('KogniBot developed by:\nBartosz Bizański @bizon#8563\nMichał Kaczmarek @MurzyN#9695\nJakub Karp @quni#8918\n Kamil Małecki @Ærooo#5807\nJulia Mika @Julcia#3267')
 
         if message.content.lower().startswith('pytasz dzika'):             # a little easter egg
             await message.channel.send('CZY SRA W LESIE!?')
             await message.add_reaction('🐗')                               # add a boar reaction
 
-        if message.content.startswith('k$guess'):            # command k$guess
+        if message.content.startswith('$guess'):            # command $guess
             await message.channel.send('Guess the number between 1 and 9')
 
             def is_correct(m):                              # define how to check if the answer message is correct
