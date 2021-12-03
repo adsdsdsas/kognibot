@@ -1,10 +1,12 @@
 import discord, random
 from asyncio import TimeoutError
 from os import getenv
+from pathlib import Path
 from dotenv import load_dotenv
 
-
-load_dotenv('.env')
+load_dotenv()
+env_path = Path('.')/'.env'
+load_dotenv(dotenv_path=env_path)
 
 '''maybe try to change the code to create commands with this extension: https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html'''
 
