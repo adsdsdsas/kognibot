@@ -1,0 +1,8 @@
+# ignore .env files
+*.env
+
+# Project exclude paths
+/env/
+/venv/
+.idea/
+__pycache__/
