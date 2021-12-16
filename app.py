@@ -15,7 +15,8 @@ load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_B
 
 
 # create a class KogniClient that inherits from discord.Client class and add functions inside this KogniClient class
-# args and kwargs just pass all agruments into the __init__ method of discord.Client class (super().__init__ meand discord.Client.__init__ here)
+# args and kwargs just pass all agruments into the __init__ method of discord.Client class
+# (super().__init__ meand discord.Client.__init__ here)
 class KogniClient(discord.Client):
     def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
         super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
@@ -26,6 +27,13 @@ class KogniClient(discord.Client):
             '$credits': 'displays credits for KogniBot creators',
             '$wejsciowka': 'invites u to wejsciowka'
         }
+
+
+    bot = commands.Bot(command_prefix='$')
+
+    @bot.command()
+    async def testy(self, ctx):
+        print(ctx)
 
     # connect with server
     async def on_ready(self):
@@ -89,10 +97,12 @@ class KogniClient(discord.Client):
             else:  # if not:
                 await message.channel.send('Oop- it is actually {}'.format(answer))
 
+
         if message.content.startswith('$build'):
             parts = message.content.split(' ')
             build_link = Gw2.get_build(parts[1])
             await message.channel.send(build_link)
+
 
 
 if __name__ == '__main__':
@@ -100,9 +110,4 @@ if __name__ == '__main__':
     client = KogniClient()
     client.run(BOT_TOKEN)
 
-    # bot = commands.Bot(command_prefix='$')
-    #
-    # @bot.command()
-    # async def test(ctx):
-    #     print('JP2GMD')
     # TODO: dokończyć
