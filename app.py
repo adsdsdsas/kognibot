@@ -6,6 +6,7 @@ from asyncio import TimeoutError
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
+import Gw2
 
 
 # load enviroment to use it to load BOT_TOKEN later
