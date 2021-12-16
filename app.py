@@ -87,6 +87,10 @@ class KogniClient(discord.Client):
             else:                                                               # if not:
                 await message.channel.send('Oop- it is actually {}'.format(answer))
 
+            if message.content.startswith('$build'):
+                parts = message.content.split(' ')
+                build_link = Gw2.get_build(parts[1], parts[2])
+                await client.send_message(message.channel, build_link)
 
 
 
