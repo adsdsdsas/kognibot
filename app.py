@@ -1,16 +1,22 @@
+# TODO: maybe try to change the code to create commands with this extension: https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
+
 import discord, random
+from discord.ext import commands
 from asyncio import TimeoutError
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()                                                   # loads enviroment variables
+
+# load enviroment to use it to load BOT_TOKEN later
+load_dotenv()                                                   # loads enviroment
 env_path = Path('.')/'.env'                                     # sets enviroment path as .env file path
-load_dotenv(dotenv_path=env_path)                               # loads enviroment with new path
+load_dotenv(dotenv_path=env_path)                               # loads enviroment with new path (a DISCORD_BOT_TOKEN variable from .env file
 
-'''maybe try to change the code to create commands with this extension: https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html'''
 
-class MyClient(discord.Client):
+# create a class KogniClient that inherits from discord.Client class and add functions inside this KogniClient class
+# args and kwargs just pass all agruments into the __init__ method of discord.Client class (super().__init__ meand discord.Client.__init__ here)
+class KogniClient(discord.Client):
     def __init__(self, *args, **kwargs):                         # define __init__ method with all possible arguments
         super().__init__(*args, **kwargs)                        # run discord.Client __init__ method with all arguments
         self.command_list = {                                    # list of all available commands with descriptions (used in $command-list)
@@ -27,12 +33,13 @@ class MyClient(discord.Client):
         print(f'Logged on as {self.user}!')                 # and confirm that connected successfully
 
 
-    # run every time someone send a message
-    async def on_message(self, message):
-        print(f'Message from {message.author}: {message.content}')      # print the message in the console
+    # run every time someone sends a message
+    async def on_message(self, message):                    # if someone sends a message
+        print(f'Message from {message.author}: {message.content}')      # first print the message in the console
+        #TODO: DELETE ABOVE LINE IN THE END OF DEVELOPMENT
 
         if message.author.id == self.user.id:               # we do not want the bot to reply to itself
-            return
+            pass                                            # if message.author == @KogniBot
 
         if message.content.startswith('$command-list'):             # command $command-list
             for x, y in self.command_list.items():
@@ -92,5 +99,12 @@ class MyClient(discord.Client):
 
 if __name__ == '__main__':
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')              # import token from .env file using os.getenv()
-    client = MyClient()
+    client = KogniClient()
     client.run(BOT_TOKEN)
+
+    # bot = commands.Bot(command_prefix='$')
+    #
+    # @bot.command()
+    # async def test(ctx):
+    #     print('JP2GMD')
+    # TODO: dokończyć
