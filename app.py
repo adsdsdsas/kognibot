@@ -25,7 +25,8 @@ class KogniClient(discord.Client):
             '$hemlo': 'says Hemlo World!',
             '$guess': 'lets u play a simple guessing game',
             '$credits': 'displays credits for KogniBot creators',
-            '$wejsciowka': 'invites u to wejsciowka'
+            '$wejsciowka': 'invites u to wejsciowka',
+            '$build "name of specialization"': 'Shows SC link to specialization builds site'
         }
 
 
