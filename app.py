@@ -1,40 +1,26 @@
-# TODO: maybe try to change the code to create commands with this extension: https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
-
-import discord, random
-from discord.ext import commands
-from asyncio import TimeoutError
+import discord
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
-import Gw2
-
-# load enviroment to use it to load BOT_TOKEN later
-load_dotenv()  # loads enviroment
-env_path = Path('.') / '.env'  # sets enviroment path as .env file path
-load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_BOT_TOKEN variable from .env file
+# now import our own modules:
+import kognicommands as kc
 
 
 # create a class KogniClient that inherits from discord.Client class and add functions inside this KogniClient class
 # args and kwargs just pass all agruments into the __init__ method of discord.Client class
 # (super().__init__ meand discord.Client.__init__ here)
 class KogniClient(discord.Client):
-    def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
-        super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
-        self.command_list = {  # list of all available commands with descriptions (used in $command-list)
-            '$command-list': 'lists all commands of KogniBot',
-            '$hemlo': 'says Hemlo World!',
-            '$guess': 'lets u play a simple guessing game',
-            '$credits': 'displays credits for KogniBot creators',
-            '$wejsciowka': 'invites u to wejsciowka',
-            '$build "name of specialization"': 'Shows SC link to specialization builds site'
-        }
-
-
-    bot = commands.Bot(command_prefix='$')
-
-    @bot.command()
-    async def testy(self, ctx):
-        print(ctx)
+    # def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
+    #     super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
+    #     self.command_list = {  # list of all available commands with descriptions (used in $command-list)
+    #         '$command-list': 'lists all commands of KogniBot',
+    #         '$hemlo': 'says Hemlo World!',
+    #         '$guess': 'lets u play a simple guessing game',
+    #         '$credits': 'displays credits for KogniBot creators',
+    #         '$wejsciowka': 'invites u to wejsciowka',
+    #         '$build "name of specialization"': 'Shows SC link to specialization builds site'
+    #     }
+    # TODO: probably delete this block (but __init__ method may be useful in the future)
 
     # connect with server
     async def on_ready(self):
@@ -43,72 +29,69 @@ class KogniClient(discord.Client):
     # run every time someone sends a message
     async def on_message(self, message):  # if someone sends a message
         print(f'Message from {message.author}: {message.content}')  # first print the message in the console
+        # a developer running the bot can see every one message sent on server in every channel - #jkm-chat is not private anymore!
         # TODO: DELETE ABOVE LINE IN THE END OF DEVELOPMENT
 
-        if message.author.id == self.user.id:  # we do not want the bot to reply to itself
-            pass  # if message.author == @KogniBot
+        # we do not want the bot to reply to itself
+        if message.author.id == self.user.id:  # if message author is me
+            pass  # don't do anything
+        else:  # if message author is someone else
+            # check if message meets any of the following conditions:
 
-        if message.content.startswith('$command-list'):  # command $command-list
-            for x, y in self.command_list.items():
-                await message.channel.send(f'{x} - {y}')
+            # command $command-list
+            if message.content.startswith('$command-list'):
+                await kc.command_list(message)
 
-        if message.content.startswith('$hemlo'):  # command $hemlo
-            await message.channel.send('Hemlo World!')
+            # command $hemlo
+            if message.content.startswith('$hemlo'):
+                await kc.hemlo(message)
 
-        if message.content.startswith('') and message.channel.name == '👽︱kosmiczne-jaja':  # reaction to meme
-            await message.add_reaction('😂')  # add a baloon face reaction
+            # command $credits
+            if message.content.startswith('$credits'):
+                await kc.credits(message)
 
-        if message.content.startswith('$wejsciowka'):  # command $wejsciowka
-            await message.channel.send('SZANOWNI PAŃSTWO')
-            try:
-                await self.wait_for('message', timeout=4)  # wait 2 seconds
-            except TimeoutError:  # asyncio.TimeoutError
-                pass
-            finally:
-                await message.channel.send('ZAPRASZAM NA WEJŚCIÓWKĘ!')
-                await message.channel.send(
-                    'https://b.socrative.com/login/student/\nW polu room name proszę wpisać ANDRZEJ5101')
-                await message.channel.send('POWODZENIA!!!')
+            # command $wejsciowka
+            if message.content.startswith('$wejsciowka'):
+                await kc.wejsciowka(self, message)
 
-        if message.content.startswith('$credits'):  # command $credits
-            await message.channel.send(
-                'KogniBot developed by:\nBartosz Bizański @bizon#8563\nMichał Kaczmarek @MurzyN#9695\nJakub Karp @quni#8918\n Kamil Małecki @Ærooo#5807\nJulia Mika @Julcia#3267')
+            # command build "specialization"
+            if message.content.startswith('$build'):
+                await kc.build(message)
 
-        if message.content.lower().startswith('pytasz dzika'):  # a little easter egg
-            await message.channel.send('CZY SRA W LESIE!?')
-            await message.add_reaction('🐗')  # add a boar reaction
+            # command $guess
+            if message.content.startswith('$guess'):
+                await kc.guess(self, message)
 
-        if message.content.startswith('$guess'):  # command $guess
-            await message.channel.send('Guess the number between 1 and 9')
+            # =====================================================
+            # NOW OTHER FEATURES
+            # =====================================================
 
-            def is_correct(m):  # define how to check if the answer message is correct
-                return m.author == message.author and m.content.isdigit()  # check if the author is the same and if the message is a digit
+            # a little easter egg
+            if 'pytasz dzika' in message.content.lower():
+                await message.channel.send('CZY SRA W LESIE!?')  # send message
+                await message.add_reaction('🐗')  # add a boar reaction
 
-            answer = random.randint(1, 10)  # generate random number
+            # reaction to memes on '👽︱kosmiczne-jaja' channel
+            if message.attachments != [] and message.channel.name == '👽︱kosmiczne-jaja':  # if message contains any attachments (e.g. pic, video, etc.) and is sent on that channel
+                await message.add_reaction('😂')  # add a baloon face reaction
 
-            try:
-                guess = await self.wait_for('message', check=is_correct,
-                                            timeout=5.0)  # if message is correct and sent in five seconds, guess = message
-            except TimeoutError:  # asyncio.TimeoutError
-                return await message.channel.send(
-                    'Sorry, you took too long it was {}'.format(answer))  # if not or time passed
-
-            if int(guess.content) == answer:  # if the answer is correct
-                await message.channel.send('You are right!')  # congrats
-            else:  # if not:
-                await message.channel.send('Oop- it is actually {}'.format(answer))
+            # =====================================================
+            # END OF IF STATEMENT
+            # END OF on_message() method
+            # END OF CLASS KogniClient
+            # =====================================================
 
 
-        if message.content.startswith('$build'):
-            parts = message.content.split(' ')
-            build_link = Gw2.get_build(parts[1])
-            await message.channel.send(build_link)
+# =================================================================
 
 
+# load enviroment to use it to load BOT_TOKEN later
+load_dotenv()  # loads enviroment
+env_path = Path('.') / '.env'  # sets enviroment path as .env file path
+load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_BOT_TOKEN variable from .env file
 
-if __name__ == '__main__':
+# main program
+if __name__ == '__main__':  # if app.py is run directly (not imported to other module) do the following block of code
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')  # import token from .env file using os.getenv()
-    client = KogniClient()
-    client.run(BOT_TOKEN)
-
-    # TODO: dokończyć
+    client = KogniClient()  # create new client object of class KogniClient
+    client.run(BOT_TOKEN)  # run using bot token imported above
