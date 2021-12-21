@@ -14,12 +14,12 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 import requests
-from utils import deletemessage
+from utils import deletemessage # TODO: delete this due to the TODO below
 from discord.utils import get
 
 
 async def login_logs(ctx, bot):
-    await deletemessage(ctx) # TODO: delete this if it work without this line
+    # await deletemessage(ctx) # TODO: delete this if it work without this line UPDATE: it works ale zostawiam to jako komentarz żebyś widział
     # with open('Logs/logs.json', 'r') as logs_data:
     #     logs = json.load(logs_data)
     with open('Gw2/Logs/user.json', 'r') as user_info:
