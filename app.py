@@ -30,34 +30,11 @@ class KogniClient(commands.Bot):
         else:  # if message author is someone else
             # check if message meets any of the following conditions:
 
-            await self.process_commands(message)  # check if a message is a command and if it is, process it
-
-            # command $command-list
-            if message.content.startswith('$command-list'):
-                await kc.command_list(message)
-
-            # command $hemlo
-            if message.content.startswith('$hemlo'):
-                await kc.hemlo(message)
-
-            # command $credits
-            if message.content.startswith('$credits'):
-                await kc.credits(message)
-
-            # command $wejsciowka
-            if message.content.startswith('$wejsciowka'):
-                await kc.wejsciowka(self, message)
-
-            # command build "specialization"
-            if message.content.startswith('$build'):
-                await kc.build(message)
-
-            # command $guess
-            if message.content.startswith('$guess'):
-                await kc.guess(self, message)
+            # we want the commands defined in the end of this file to work
+            await self.process_commands(message)  # check if a message is a command and if it is, process it using ext.commands
 
             # =====================================================
-            # NOW OTHER FEATURES
+            # NOW OUR FEATURES
             # =====================================================
 
             # a little easter egg
@@ -87,22 +64,53 @@ load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_B
 # main program
 if __name__ == '__main__':  # if app.py is run directly (not imported to other module) do the following block of code
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')  # import token from .env file using os.getenv()
-    client = KogniClient(command_prefix='$')  # create new client object of class KogniClient
+    bot = KogniClient(command_prefix='$')  # create new client object of class KogniClient (command_prefix - what sing to use in commands)
 
 
-    # @client.event
+    # @bot.event
     # async def on_ready():
     #     print(f'Logged on as {client.user}!')  # and confirm that connected successfully
     #
-    # @client.event
+    # @bot.event
     # async def on_message(message):
     #     if message.content.startswith('$hemlo'):
     #         await kc.hemlo(message)
 
 
-    @client.command()
-    async def elu(ctx, arg):
-        await ctx.send(f'{arg}wina')
+    # a test command and how commands work
+    @bot.command()   # creates a command
+    async def elu(ctx, arg):    # a test command $elu "something"
+        await ctx.send(f'{arg}wina')    # send "something"wina
 
 
-    client.run(BOT_TOKEN)  # run using bot token imported above
+    # command $command-list
+    @bot.command(name='command-list')
+    async def command_list(ctx):
+        await kc.command_list(ctx)
+
+
+    # command $hemlo
+    @bot.command()
+    async def hemlo(ctx):
+        await kc.hemlo(ctx)
+
+
+    # command $credits
+    @bot.command()
+    async def credits(ctx):
+        await kc.credits(ctx)
+
+
+    # command $wejsciowka
+    @bot.command()
+    async def wejsciowka(ctx):
+        await kc.wejsciowka(ctx)
+
+
+    # command build "specialization"
+    @bot.command()
+    async def build(ctx, scpec):
+        await kc.build(ctx, scpec)
+
+
+    bot.run(BOT_TOKEN)  # run using bot token imported above
