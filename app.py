@@ -16,6 +16,9 @@ class KogniClient(commands.Bot):
     def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
         super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
 
+        self.status_format = 'Current User: {}'
+        self.emoji_list = []
+        self.clear_list = []
         with open('Gw2/Logs/user.json', 'r') as user_prop:
             user = json.load(user_prop)
         self.owner_name = user['name']
