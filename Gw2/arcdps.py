@@ -33,8 +33,6 @@ async def login_logs(ctx, bot):
         out = 'Please use the file explorer to select your arcdps.cbtlogs folder.'
         try:
             target = await ctx.author.send(out)
-        except discord.Forbidden:
-            target = await ctx.send(out)
         root = Tk()
         root.withdraw()
         key['filepath'] = filedialog.askdirectory(initialdir="/", title="Select your arcdps.cbtlogs folder")
@@ -44,9 +42,6 @@ async def login_logs(ctx, bot):
             message = await ctx.author.send(
                 'Your selected filepath is:\n```{}\nClick ✅ to confirm, ❌ to reselect```'.format(
                     bot.owner_filepath))
-        except discord.Forbidden:
-            message = await ctx.send('Your selected log order is:\n```{}\nClick ✅ to confirm, ❌ to reselect```'.format(
-                bot.owner_filepath))
         await message.add_reaction('✅')
         await message.add_reaction('❌')
 
