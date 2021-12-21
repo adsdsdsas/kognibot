@@ -18,7 +18,7 @@ class KogniClient(commands.Bot):
 
         self.status_format = 'Current User: {}'
         self.emoji_list = []
-        self.clear_list = []
+        # self.clear_list = []
         with open('Gw2/Logs/user.json', 'r') as user_prop:
             user = json.load(user_prop)
         self.owner_name = user['name']

@@ -1,8 +1,9 @@
 import random
 from asyncio import TimeoutError
 # now import our own modules:
-from kognibot.Gw2 import Gw2
-from kognibot.Gw2 import arcdps
+from Gw2 import Gw2
+from Gw2 import arcdps
+import deletemessage
 
 COMMAND_DICT = {  # list of all available commands with descriptions (used in $command-list)
     '$command-list': 'lists all commands of KogniBot',
@@ -20,16 +21,16 @@ Jakub Karp <@!263730543827484672>
 Kamil Małecki <@!534446289396695053>
 Julia Mika <@!782601330229248030>'''
 
-async def deletemessage(ctx):
-    guild = ctx.guild
-    if guild is None:
-        has_perms = False
-    else:
-        has_perms = ctx.channel.permissions_for(guild.me).manage_messages
-    if has_perms:
-        await ctx.message.delete()
-    else:
-        await ctx.send('I do not have permissions to delete messages.')
+# async def deletemessage(ctx):
+#     guild = ctx.guild
+#     if guild is None:
+#         has_perms = False
+#     else:
+#         has_perms = ctx.channel.permissions_for(guild.me).manage_messages
+#     if has_perms:
+#         await ctx.message.delete()
+#     else:
+#         await ctx.send('I do not have permissions to delete messages.')
 
 
 async def command_list(m):
