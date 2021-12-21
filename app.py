@@ -20,7 +20,7 @@ class KogniClient(commands.Bot):
         # TODO: CREATE GW2 CLASS AND PUT ALL GW2 RELATED STUFF IN OTHER MODULE
         self.status_format = 'Current User: {}'
         self.emoji_list = []
-        self.clear_list = []
+        # self.clear_list = []
         with open('Gw2/Logs/user.json', 'r') as user_prop:  # open the file user.json
             user = json.load(user_prop) # and import its content to user variable
         self.owner_name = user['name']

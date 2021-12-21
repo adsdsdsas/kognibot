@@ -1,9 +1,9 @@
-import random
 from asyncio import sleep
 # now import our own modules:
-from utils import deletemessage
 from Gw2 import Gw2
 from Gw2 import arcdps
+from utils import deletemessage
+
 
 COMMAND_DICT = {  # list of all available commands with descriptions (used in $command-list)
     '$command-list': 'lists all commands of KogniBot',
@@ -20,6 +20,7 @@ Michał Kaczmarek <@!278522018805186563>
 Jakub Karp <@!263730543827484672>
 Kamil Małecki <@!534446289396695053>
 Julia Mika <@!782601330229248030>'''
+
 
 
 async def command_list(ctx):
