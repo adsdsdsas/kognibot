@@ -37,33 +37,31 @@ async def command_list(m):
         await m.channel.send(f'{x} - {y}')  # send message with pattern: $command - description
 
 
-async def hemlo(m):
-    await m.channel.send('Hemlo World!')  # send message
+async def hemlo(ctx):
+    await ctx.send('Hemlo World!')  # send message
 
 
-async def credits(m):
-    await m.channel.send(CREDITS)  # send message
+async def credits(ctx):
+    await ctx.send(CREDITS)  # send message
 
 
-async def wejsciowka(self, m):
-    await m.channel.send('SZANOWNI PAŃSTWO')  # send message
+async def wejsciowka(self, ctx):
+    await ctx.send('SZANOWNI PAŃSTWO')  # send message
     try:  # try to do the following
         await self.wait_for('m',
                             timeout=4)  # wait 2 seconds, if someone wrote something, break; if time passed, raise asyncio.TimeoutError
     except TimeoutError:  # if asyncio.TimeoutError raised
         pass  # do nothing
     finally:  # execute no matter if asyncio.TimeoutError raised or not
-        await m.channel.send('ZAPRASZAM NA WEJŚCIÓWKĘ!')  # send message
-        await m.channel.send(
+        await ctx.send('ZAPRASZAM NA WEJŚCIÓWKĘ!')  # send message
+        await ctx.send(
             'https://b.socrative.com/login/student/\nW polu room name proszę wpisać ANDRZEJ5101')  # send message (\n - new line)
-        await m.channel.send('POWODZENIA!!!')  # send message
+        await ctx.send('POWODZENIA!!!')  # send message
 
 
-async def build(m):
-    parts = m.content.split(
-        ' ')  # make a list containing every word (each string separated by spaces) in message as a separate value
-    build_link = Gw2.get_build(parts[1])  # set build_link as the return of get_build() function from Gw2 module
-    await m.channel.send(build_link)  # send message wih build_link
+async def build(ctx, spec):
+    build_link = Gw2.get_build(spec)  # set build_link as the return of get_build() function from Gw2 module
+    await ctx.send(build_link)  # send message wih build_link
 
 async def login_logs(ctx, bot):
     await arcdps.login_logs(ctx, bot)
@@ -72,6 +70,7 @@ async def login_logs(ctx, bot):
 
 # ==============================
 
+# and old command, nou used rn
 async def guess(self, message):
     await message.channel.send('Guess the number between 1 and 9')  # send message
 
