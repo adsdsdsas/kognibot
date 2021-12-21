@@ -14,18 +14,21 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 import requests
-from deletemessage import deletemessage
+from utils import deletemessage
 from discord.utils import get
 
 
 async def login_logs(ctx, bot):
-    await deletemessage(ctx)
+    await deletemessage(ctx) # TODO: delete this if it work without this line
+    # with open('Logs/logs.json', 'r') as logs_data:
+    #     logs = json.load(logs_data)
     with open('Gw2/Logs/user.json', 'r') as user_info:
         key = json.load(user_info)
     key['id'] = ctx.author.id
     bot.owner_id = ctx.author.id
     key['name'] = ctx.author.name
     await bot.update_status(key['name'])
+
 
     if len(bot.owner_filepath) == 0:
 
@@ -42,6 +45,7 @@ async def login_logs(ctx, bot):
                     bot.owner_filepath))
             await message.add_reaction('✅')
             await message.add_reaction('❌')
+
 
             def r_check(user, reactions):
                 reactions = get(message.reactions, emoji="✅")
