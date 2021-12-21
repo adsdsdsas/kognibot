@@ -17,6 +17,7 @@ class KogniClient(commands.Bot):
         super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
 
         # some properties used in GW2 arcdps:
+        # TODO: CREATE GW2 CLASS AND PUT ALL GW2 RELATED STUFF IN OTHER MODULE
         self.status_format = 'Current User: {}'
         self.emoji_list = []
         self.clear_list = []
@@ -32,6 +33,7 @@ class KogniClient(commands.Bot):
         print(f'Logged on as {self.user}!')  # and confirm that connected successfully
 
     # used in GW2 arcdps, idk how it works XD
+    # TODO: CREATE GW2 CLASS AND PUT ALL GW2 RELATED STUFF IN OTHER MODULE
     async def update_status(self, name):
         self.owner_name = name
         status = discord.Game(name=self.status_format.format(name))
@@ -56,6 +58,7 @@ class KogniClient(commands.Bot):
             # NOW OUR FEATURES
             # =====================================================
 
+            # TODO: MOVE TO UTILS.PY
             # a little easter egg
             if 'pytasz dzika' in message.content.lower():
                 await message.channel.send('CZY SRA W LESIE!?')  # send message
@@ -134,7 +137,7 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     async def build(ctx, scpec):
         await kc.build(ctx, scpec)
 
-
+    # import arcdps logs
     @bot.command()
     async def login_logs(ctx):
         await kc.login_logs(ctx, bot)
