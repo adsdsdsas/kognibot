@@ -11,7 +11,7 @@ COMMAND_DICT = {  # list of all available commands with descriptions (used in $c
     '$credits': 'displays credits for KogniBot creators',
     '$wejsciowka': 'invites u to wejsciowka',
     '$build "name of specialization"': 'Shows SC link to specialization builds site',
-    '$guess': 'lets u play a simple guessing game'
+    '$login_logs': '?????'  # TODO: update the description of $login_logs command
 }
 
 CREDITS = '''<@!916014586786897921> developed by:
