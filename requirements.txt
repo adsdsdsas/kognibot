@@ -8,6 +8,6 @@ multidict==5.2.0
 python-dotenv==0.19.2
 typing-extensions==4.0.1
 yarl==1.7.2
-bs4==4.10.0
+beautifulsoup4==4.10.0
 selenium==3.141.0
 requests==2.26.0

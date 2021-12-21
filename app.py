@@ -9,18 +9,19 @@ import kognicommands as kc
 
 
 
-# create a class KogniClient that inherits from discord.Client class and add functions inside this KogniClient class
+# create a class KogniClient that inherits from commands.Bot class and add functions inside this KogniClient class
 # args and kwargs just pass all agruments into the __init__ method of discord.Client class
-# (super().__init__ meand discord.Client.__init__ here)
+# (super().__init__     means     discord.Client.__init__ here)
 class KogniClient(commands.Bot):
     def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
         super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
 
+        # some properties used in GW2 arcdps:
         self.status_format = 'Current User: {}'
         self.emoji_list = []
         self.clear_list = []
-        with open('Gw2/Logs/user.json', 'r') as user_prop:
-            user = json.load(user_prop)
+        with open('Gw2/Logs/user.json', 'r') as user_prop:  # open the file user.json
+            user = json.load(user_prop) # and import its content to user variable
         self.owner_name = user['name']
         self.owner_id = user['id']
         self.owner_key = user['key']
@@ -30,7 +31,8 @@ class KogniClient(commands.Bot):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')  # and confirm that connected successfully
 
-    async def update_status(self, name: str):
+    # used in GW2 arcdps, idk how it works XD
+    async def update_status(self, name):
         self.owner_name = name
         status = discord.Game(name=self.status_format.format(name))
         await self.change_presence(activity=status)
@@ -64,46 +66,47 @@ class KogniClient(commands.Bot):
                 await message.add_reaction('😂')  # add a baloon face reaction
 
             # =====================================================
-            # END OF IF STATEMENT
-            # END OF on_message() method
-            # END OF CLASS KogniClient
+            # END OF on_message() method and class KogniClient
             # =====================================================
+
+
+
 
 
 # =================================================================
 
 
-# load enviroment to use it to load BOT_TOKEN later
+
+
+
+# load enviroment to use it to load BOT_TOKEN in the end of code
 load_dotenv()  # loads enviroment
 env_path = Path('.') / '.env'  # sets enviroment path as .env file path
 load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_BOT_TOKEN variable from .env file
 
-# main program
+
+
+
+
+# MAIN PROGRAM
 if __name__ == '__main__':  # if app.py is run directly (not imported to other module) do the following block of code
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')  # import token from .env file using os.getenv()
-
     bot = KogniClient(command_prefix='$')  # create new client object of class KogniClient (command_prefix - what sing to use in commands)
 
 
-    # @bot.event
-    # async def on_ready():
-    #     print(f'Logged on as {client.user}!')  # and confirm that connected successfully
-    #
-    # @bot.event
-    # async def on_message(message):
-    #     if message.content.startswith('$hemlo'):
-    #         await kc.hemlo(message)
-
+    # -----------------------------------------------
+    # NOW WE DEFINE OUR COMMANDS
+    # -----------------------------------------------
 
 
     # a test command and how commands work
-    @bot.command()   # creates a command
+    @bot.command()   # change the function defined below to a bot command and add it to bot
     async def elu(ctx, arg):    # a test command $elu "something"
         await ctx.send(f'{arg}wina')    # send "something"wina
 
 
     # command $command-list
-    @bot.command(name='command-list')
+    @bot.command(name='command-list')   # name= lets us use $command-list command instead of $command_list (the name of defined function)
     async def command_list(ctx):
         await kc.command_list(ctx)
 
@@ -139,5 +142,8 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
 
 
 
+    # -----------------------------------------------
+    # END OF COMMANDS
+    # -----------------------------------------------
 
     bot.run(BOT_TOKEN)  # run using bot token imported above
