@@ -3,8 +3,10 @@ from discord.ext import commands
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
+import json
 # now import our own modules:
 import kognicommands as kc
+
 
 
 # create a class KogniClient that inherits from discord.Client class and add functions inside this KogniClient class
@@ -13,6 +15,13 @@ import kognicommands as kc
 class KogniClient(commands.Bot):
     def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
         super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
+
+        with open('Gw2/Logs/user.json', 'r') as user_prop:
+            user = json.load(user_prop)
+        self.owner_name = user['name']
+        self.owner_id = user['id']
+        self.owner_key = user['key']
+        self.owner_filepath = user['filepath']
 
     # connect with server
     async def on_ready(self):

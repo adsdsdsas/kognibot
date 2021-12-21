@@ -21,12 +21,12 @@ async def login_logs(ctx, bot):
     await deletemessage(ctx)
     # with open('Logs/logs.json', 'r') as logs_data:
     #     logs = json.load(logs_data)
-    with open('Logs/user.json', 'r') as user_info:
-        user = json.load(user_info)
-    user['id'] = ctx.author.id
+    with open('Gw2/Logs/user.json', 'r') as user_info:
+        key = json.load(user_info)
+    key['id'] = ctx.author.id
     bot.owner_id = ctx.author.id
-    user['name'] = ctx.author.name
-    await bot.update_status(user['name'])
+    key['name'] = ctx.author.name
+    await bot.update_status(key['name'])
 
     confirmed = False
     while len(bot.owner_filepath) == 0 or not confirmed:
@@ -37,8 +37,8 @@ async def login_logs(ctx, bot):
             target = await ctx.send(out)
         root = Tk()
         root.withdraw()
-        user['filepath'] = filedialog.askdirectory(initialdir="/", title="Select your arcdps.cbtlogs folder")
-        bot.owner_filepath = user['filepath']
+        key['filepath'] = filedialog.askdirectory(initialdir="/", title="Select your arcdps.cbtlogs folder")
+        bot.owner_filepath = key['filepath']
 
         try:
             message = await ctx.author.send(
@@ -59,8 +59,8 @@ async def login_logs(ctx, bot):
         await message.delete()
         await target.delete()
 
-    with open('cogs/data/user.json', 'w') as key_file:
-        json.dump(user, user_info, indent=4)
+    with open('Logs/user.json', 'w') as user_info:
+        json.dump(key, user_info, indent=4)
     target = await ctx.send('Login successful ✅ : Ready to upload logs.')
     bot.clear_list.append(target)
 
