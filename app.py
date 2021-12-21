@@ -27,6 +27,11 @@ class KogniClient(commands.Bot):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')  # and confirm that connected successfully
 
+    async def update_status(self, name: str):
+        self.owner_name = name
+        status = discord.Game(name=self.status_format.format(name))
+        await self.change_presence(activity=status)
+
     # run every time someone sends a message
     async def on_message(self, message):  # if someone sends a message
         print(f'Message from {message.author}: {message.content}')  # first print the message in the console
