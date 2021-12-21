@@ -3,8 +3,10 @@ from discord.ext import commands
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
+import json
 # now import our own modules:
 import kognicommands as kc
+
 
 
 # create a class KogniClient that inherits from discord.Client class and add functions inside this KogniClient class
@@ -14,9 +16,24 @@ class KogniClient(commands.Bot):
     def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
         super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
 
+        self.status_format = 'Current User: {}'
+        self.emoji_list = []
+        self.clear_list = []
+        with open('Gw2/Logs/user.json', 'r') as user_prop:
+            user = json.load(user_prop)
+        self.owner_name = user['name']
+        self.owner_id = user['id']
+        self.owner_key = user['key']
+        self.owner_filepath = user['filepath']
+
     # connect with server
     async def on_ready(self):
         print(f'Logged on as {self.user}!')  # and confirm that connected successfully
+
+    async def update_status(self, name: str):
+        self.owner_name = name
+        status = discord.Game(name=self.status_format.format(name))
+        await self.change_presence(activity=status)
 
     # run every time someone sends a message
     async def on_message(self, message):  # if someone sends a message
@@ -64,6 +81,7 @@ load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_B
 # main program
 if __name__ == '__main__':  # if app.py is run directly (not imported to other module) do the following block of code
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')  # import token from .env file using os.getenv()
+
     bot = KogniClient(command_prefix='$')  # create new client object of class KogniClient (command_prefix - what sing to use in commands)
 
 
@@ -75,6 +93,7 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     # async def on_message(message):
     #     if message.content.startswith('$hemlo'):
     #         await kc.hemlo(message)
+
 
 
     # a test command and how commands work
@@ -111,6 +130,14 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     @bot.command()
     async def build(ctx, scpec):
         await kc.build(ctx, scpec)
+
+
+    @bot.command()
+    async def login_logs(ctx):
+        await kc.login_logs(ctx, bot)
+
+
+
 
 
     bot.run(BOT_TOKEN)  # run using bot token imported above
