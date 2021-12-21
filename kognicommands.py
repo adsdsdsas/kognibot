@@ -1,7 +1,8 @@
 import random
 from asyncio import TimeoutError
 # now import our own modules:
-import Gw2
+from kognibot.Gw2 import Gw2
+from kognibot.Gw2 import arcdps
 
 COMMAND_DICT = {  # list of all available commands with descriptions (used in $command-list)
     '$command-list': 'lists all commands of KogniBot',
@@ -18,6 +19,17 @@ Michał Kaczmarek <@!278522018805186563>
 Jakub Karp <@!263730543827484672>
 Kamil Małecki <@!534446289396695053>
 Julia Mika <@!782601330229248030>'''
+
+async def deletemessage(ctx):
+    guild = ctx.guild
+    if guild is None:
+        has_perms = False
+    else:
+        has_perms = ctx.channel.permissions_for(guild.me).manage_messages
+    if has_perms:
+        await ctx.message.delete()
+    else:
+        await ctx.send('I do not have permissions to delete messages. Please enable this in the future.')
 
 
 async def command_list(m):
@@ -52,6 +64,10 @@ async def build(m):
         ' ')  # make a list containing every word (each string separated by spaces) in message as a separate value
     build_link = Gw2.get_build(parts[1])  # set build_link as the return of get_build() function from Gw2 module
     await m.channel.send(build_link)  # send message wih build_link
+
+async def login_logs(ctx, bot):
+    await arcdps.login_logs(ctx, bot)
+
 
 
 # ==============================

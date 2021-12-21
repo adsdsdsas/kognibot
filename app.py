@@ -87,7 +87,7 @@ load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_B
 # main program
 if __name__ == '__main__':  # if app.py is run directly (not imported to other module) do the following block of code
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')  # import token from .env file using os.getenv()
-    client = KogniClient(command_prefix='$')  # create new client object of class KogniClient
+    bot = KogniClient(command_prefix='$')  # create new client object of class KogniClient
 
 
     # @client.event
@@ -100,9 +100,16 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     #         await kc.hemlo(message)
 
 
-    @client.command()
+    @bot.command()
     async def elu(ctx, arg):
         await ctx.send(f'{arg}wina')
 
+    @bot.command()
+    async def login_logs(ctx):
+        await kc.login_logs(ctx, bot)
 
-    client.run(BOT_TOKEN)  # run using bot token imported above
+
+
+
+
+    bot.run(BOT_TOKEN)  # run using bot token imported above
