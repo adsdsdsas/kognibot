@@ -29,7 +29,7 @@ async def deletemessage(ctx):
     if has_perms:
         await ctx.message.delete()
     else:
-        await ctx.send('I do not have permissions to delete messages. Please enable this in the future.')
+        await ctx.send('I do not have permissions to delete messages.')
 
 
 async def command_list(m):
