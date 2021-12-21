@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
@@ -9,18 +10,9 @@ import kognicommands as kc
 # create a class KogniClient that inherits from discord.Client class and add functions inside this KogniClient class
 # args and kwargs just pass all agruments into the __init__ method of discord.Client class
 # (super().__init__ meand discord.Client.__init__ here)
-class KogniClient(discord.Client):
-    # def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
-    #     super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
-    #     self.command_list = {  # list of all available commands with descriptions (used in $command-list)
-    #         '$command-list': 'lists all commands of KogniBot',
-    #         '$hemlo': 'says Hemlo World!',
-    #         '$guess': 'lets u play a simple guessing game',
-    #         '$credits': 'displays credits for KogniBot creators',
-    #         '$wejsciowka': 'invites u to wejsciowka',
-    #         '$build "name of specialization"': 'Shows SC link to specialization builds site'
-    #     }
-    # TODO: probably delete this block (but __init__ method may be useful in the future)
+class KogniClient(commands.Bot):
+    def __init__(self, *args, **kwargs):  # define __init__ method with all possible arguments
+        super().__init__(*args, **kwargs)  # run discord.Client __init__ method with all arguments
 
     # connect with server
     async def on_ready(self):
@@ -37,6 +29,8 @@ class KogniClient(discord.Client):
             pass  # don't do anything
         else:  # if message author is someone else
             # check if message meets any of the following conditions:
+
+            await self.process_commands(message)  # check if a message is a command and if it is, process it
 
             # command $command-list
             if message.content.startswith('$command-list'):
@@ -93,5 +87,22 @@ load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_B
 # main program
 if __name__ == '__main__':  # if app.py is run directly (not imported to other module) do the following block of code
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')  # import token from .env file using os.getenv()
-    client = KogniClient()  # create new client object of class KogniClient
+    client = KogniClient(command_prefix='$')  # create new client object of class KogniClient
+
+
+    # @client.event
+    # async def on_ready():
+    #     print(f'Logged on as {client.user}!')  # and confirm that connected successfully
+    #
+    # @client.event
+    # async def on_message(message):
+    #     if message.content.startswith('$hemlo'):
+    #         await kc.hemlo(message)
+
+
+    @client.command()
+    async def elu(ctx, arg):
+        await ctx.send(f'{arg}wina')
+
+
     client.run(BOT_TOKEN)  # run using bot token imported above
