@@ -14,11 +14,9 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 import requests
-from kognibot.kognicommands import deletemessage
 
 
 async def login_logs(ctx, bot):
-    await deletemessage(ctx)
     # with open('Logs/logs.json', 'r') as logs_data:
     #     logs = json.load(logs_data)
     with open('Gw2/Logs/user.json', 'r') as user_info:
@@ -31,17 +29,15 @@ async def login_logs(ctx, bot):
     confirmed = False
     while len(bot.owner_filepath) == 0 or not confirmed:
         out = 'Please use the file explorer to select your arcdps.cbtlogs folder.'
-        try:
-            target = await ctx.author.send(out)
+        target = await ctx.author.send(out)
         root = Tk()
         root.withdraw()
         key['filepath'] = filedialog.askdirectory(initialdir="/", title="Select your arcdps.cbtlogs folder")
         bot.owner_filepath = key['filepath']
 
-        try:
-            message = await ctx.author.send(
-                'Your selected filepath is:\n```{}\nClick ✅ to confirm, ❌ to reselect```'.format(
-                    bot.owner_filepath))
+        message = await ctx.author.send(
+            'Your selected filepath is:\n```{}\nClick ✅ to confirm, ❌ to reselect```'.format(
+                bot.owner_filepath))
         await message.add_reaction('✅')
         await message.add_reaction('❌')
 
