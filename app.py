@@ -1,12 +1,11 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
 import json
 # now import our own modules:
 import kognicommands as kc
-
 
 
 # create a class KogniClient that inherits from commands.Bot class and add functions inside this KogniClient class
@@ -22,7 +21,7 @@ class KogniClient(commands.Bot):
         self.emoji_list = []
         # self.clear_list = []
         with open('Gw2/Logs/user.json', 'r') as user_prop:  # open the file user.json
-            user = json.load(user_prop) # and import its content to user variable
+            user = json.load(user_prop)  # and import its content to user variable
         self.owner_name = user['name']
         self.owner_id = user['id']
         self.owner_key = user['key']
@@ -31,6 +30,7 @@ class KogniClient(commands.Bot):
     # connect with server
     async def on_ready(self):
         print(f'Logged on as {self.user}!')  # and confirm that connected successfully
+        cognitive_bias_of_the_day.start()   # start the cognitive bias of the day loop
 
     # used in GW2 arcdps, idk how it works XD
     # TODO: CREATE GW2 CLASS AND PUT ALL GW2 RELATED STUFF IN OTHER MODULE
@@ -52,7 +52,8 @@ class KogniClient(commands.Bot):
             # check if message meets any of the following conditions:
 
             # we want the commands defined in the end of this file to work
-            await self.process_commands(message)  # check if a message is a command and if it is, process it using ext.commands
+            await self.process_commands(
+                message)  # check if a message is a command and if it is, process it using ext.commands
 
             # =====================================================
             # NOW OUR FEATURES
@@ -74,12 +75,7 @@ class KogniClient(commands.Bot):
 
 
 
-
-
 # =================================================================
-
-
-
 
 
 # load enviroment to use it to load BOT_TOKEN in the end of code
@@ -87,29 +83,26 @@ load_dotenv()  # loads enviroment
 env_path = Path('.') / '.env'  # sets enviroment path as .env file path
 load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_BOT_TOKEN variable from .env file
 
-
-
-
-
 # MAIN PROGRAM
 if __name__ == '__main__':  # if app.py is run directly (not imported to other module) do the following block of code
     BOT_TOKEN = getenv('DISCORD_BOT_TOKEN')  # import token from .env file using os.getenv()
-    bot = KogniClient(command_prefix='$')  # create new client object of class KogniClient (command_prefix - what sing to use in commands)
+    bot = KogniClient(
+        command_prefix='$')  # create new client object of class KogniClient (command_prefix - what sing to use in commands)
 
 
     # -----------------------------------------------
     # NOW WE DEFINE OUR COMMANDS
     # -----------------------------------------------
 
-
     # a test command and how commands work
-    @bot.command()   # change the function defined below to a bot command and add it to bot
-    async def elu(ctx, arg):    # a test command $elu "something"
-        await ctx.send(f'{arg}wina')    # send "something"wina
+    @bot.command()  # change the function defined below to a bot command and add it to bot
+    async def elu(ctx, arg):  # a test command $elu "something"
+        await ctx.send(f'{arg}wina')  # send "something"wina
 
 
     # command $command-list
-    @bot.command(name='command-list')   # name= lets us use $command-list command instead of $command_list (the name of defined function)
+    @bot.command(
+        name='command-list')  # name= lets us use $command-list command instead of $command_list (the name of defined function)
     async def command_list(ctx):
         await kc.command_list(ctx)
 
@@ -132,21 +125,32 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
         await kc.wejsciowka(ctx)
 
 
-    # command build "specialization"
+    # command $build "specialization"
     @bot.command()
     async def build(ctx, scpec):
         await kc.build(ctx, scpec)
 
-    # import arcdps logs
+
+    # command $login logs that imports arcdps logs
     @bot.command()
     async def login_logs(ctx):
         await kc.login_logs(ctx, bot)
 
 
 
+    # a loop that makes bot send cognitive bias of the day (it's started in or_ready() method above in the KogniClient class)
+    @tasks.loop(seconds=10) # create a loop and run it every 60 seconds
+    async def cognitive_bias_of_the_day():  # define a function
+
+        # get a channel from these IDs
+        channel = bot.get_guild(762767093661564961).get_channel(781633200522002452) # Kognitywistyka server ID, #admin-bot channel ID
+        await kc.bias_of_the_day_pass_channel(channel)  # pass channel to the function
+
 
     # -----------------------------------------------
-    # END OF COMMANDS
+    # END OF COMMANDS AND TASKS
     # -----------------------------------------------
+
+
 
     bot.run(BOT_TOKEN)  # run using bot token imported above

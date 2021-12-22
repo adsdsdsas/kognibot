@@ -2,24 +2,7 @@ from asyncio import sleep
 # now import our own modules:
 from Gw2 import Gw2
 from Gw2 import arcdps
-from utils import deletemessage
-
-
-COMMAND_DICT = {  # list of all available commands with descriptions (used in $command-list)
-    '$command-list': 'lists all commands of KogniBot',
-    '$hemlo': 'says Hemlo World!',
-    '$credits': 'displays credits for KogniBot creators',
-    '$wejsciowka': 'invites u to wejsciowka',
-    '$build "name of specialization"': 'Shows SC link to specialization builds site',
-    '$login_logs': '?????'  # TODO: update the description of $login_logs command
-}
-
-CREDITS = '''<@!916014586786897921> developed by:
-Bartosz Bizański <@!693551445139521587>
-Michał Kaczmarek <@!278522018805186563>
-Jakub Karp <@!263730543827484672>
-Kamil Małecki <@!534446289396695053>
-Julia Mika <@!782601330229248030>'''
+from utils import COMMAND_DICT, CREDITS, deletemessage, bias_of_the_day
 
 
 
@@ -47,6 +30,11 @@ async def wejsciowka(ctx):
     await ctx.send(
         'https://b.socrative.com/login/student/\nW polu room name proszę wpisać ANDRZEJ5101')  # send message (\n - new line)
     await ctx.send('POWODZENIA!!!')  # send message
+
+# a function that runs a bias_of_the_day() function from utils
+async def bias_of_the_day_pass_channel(channel):
+    await bias_of_the_day(channel)
+
 
 
 # ---------------------------------------------------
