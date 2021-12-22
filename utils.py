@@ -1,4 +1,4 @@
-import random
+import random, json
 from datetime import datetime, time, timedelta
 
 
@@ -21,69 +21,76 @@ Julia Mika <@!782601330229248030>'''
 
 
 
-
+# delete a message that run a command
 async def deletemessage(ctx):
-    guild = ctx.guild
-    if guild is None:
+    guild = ctx.guild   # get the server where the message was send
+    if guild is None:   # check if server exist (if it's not a DM)
         has_perms = False
-    else:
+    else:   # check if bot has permissions for deleting messages
         has_perms = ctx.channel.permissions_for(guild.me).manage_messages
-    if has_perms:
-        await ctx.message.delete()
-    else:
-        await ctx.send('I do not have permissions to delete messages.')
+    if has_perms:   # if it bot has perms
+        await ctx.message.delete()  # delete message
+    else:   # if no server or perms
+        await ctx.send('I do not have permissions to delete messages.') # send message
 
 
+# -----------------------------------------------
+# COGNITIVE BIAS OF THE DAY:
+# -----------------------------------------------
 
+
+# function that operates the cognitive bias of the day, run in cognitive_bias_of_the_day loop in app.py
 async def bias_of_the_day(channel):
-    WHEN = await rand_when()    # await get_when będzie i będzie odczytywać z pliku to WHEN
-    NOW = datetime.now().strftime("%Y-%m-%d %H:%M")
-    print(WHEN)
-    print(NOW)
-    if NOW == WHEN: # if now (in string format "hh:mm") is WHEN time
-        await channel.send('hejka tu <@!916014586786897921>') # send message
-        # with open file:
-        #     save rand_when()
+    when = get_when()    # get_when będzie i będzie odczytywać z pliku to when
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    print(when) # TODO: del later
+    print(datetime.now().date().strftime("%Y-%m-%d")) # print now date TODO: del later
+    print(now) # TODO: del later
+    if now == when: # if now (in string format "hh:mm") is when time
+        await channel.send('hejka tu <@!916014586786897921>') # send message    # TODO: PASS RANDOMLY GENERATED BIAS HERE
+        with open('CBotD/whenfile.csv', 'w') as whenfile:   # write to the file
+            whenfile.write(rand_when()) # datetime string with tomorrow date and random hour
+
+
         # i wsm chyba tyle
         # jest pętla i ona sprawdza czy jest teraz ta data i godzina
         # i jeśli jest to wysyła wiadomość i generuje nową datę i godzinę (jutro)
         # teraz TODO: jak zrobić by oznaczało te błędy poznawcze, które już były
         # np. log 15 ostatnich i update pliku o jedną linijkę i spradzanie czy w tym logu jest wylosowany błąd
 
-
-async def rand_when():
-    hh = random.randint(10, 18) # random hour
+# generate a new datetime string and save it in the file
+def rand_when(today=False):
+    delta = timedelta(days=1)   # date delta (set the date for tomorrow but if today=True, set it for today
+    hh = random.randint(10, 18) # random hour between 10 and 18
     mm = random.randint(0, 59)  # random minute
-    WHEN = datetime.combine(datetime.now().date() + timedelta(days=1), time(hour=hh, minute=mm)).strftime("%Y-%m-%d %H:%M")
-    return WHEN
+    if today:
+        delta = timedelta(days=0)   # set the date for today if needed (if today=True)
 
+        #this block if for generating random hour/minute that
+        now_hour = datetime.now().time().hour    # take current hour
+        # if curren hour is between 10 and 18 h=current hour; else h=10
+        h = now_hour + 1 if 18 > now_hour >= 10 else 10
+        hh = random.randint(h, 18) # random hour between 10 and 18
+    #       combine these: (          todays date +1  AND   random generated hour & minute )  and change it into str with format "YYYY-MM-DD HH:MM"
+    when = datetime.combine(datetime.now().date() + delta, time(hour=hh, minute=mm)).strftime("%Y-%m-%d %H:%M")
+    return when # return datetime string
 
-
-
-        # if dt.now().strftime("%H:%M") == "16:28":
-        #     print('stopping the loop')
-        #     cognitive_bias_of_the_day.stop()
-
-# WHEN = time(13, 00, 00)
-# channel_id = 781633200522002452
-
-# async def called_once_a_day(chan):  # Fired every day
-#     # await bot.wait_until_ready()  # Make sure your guild cache is ready so the channel can be found via get_channel
-#     channel = chan
-#     await channel.send("your message here")
-
-# async def background_task(chan):
-#     now = datetime.utcnow()
-#     if now.time() > WHEN:  # Make sure loop doesn't start after {WHEN} as then it will send immediately the first time as negative seconds will make the sleep yield instantly
-#         tomorrow = datetime.combine(now.date() + timedelta(days=1), time(0))
-#         seconds = (tomorrow - now).total_seconds()  # Seconds until tomorrow (midnight)
-#         await asyncio.sleep(seconds)   # Sleep until tomorrow and then the loop will start
-#     while True:
-#         now = datetime.utcnow() # You can do now() or a specific timezone if that matters, but I'll leave it with utcnow
-#         target_time = datetime.combine(now.date(), WHEN)  # 6:00 PM today (In UTC)
-#         seconds_until_target = (target_time - now).total_seconds()
-#         await asyncio.sleep(seconds_until_target)  # Sleep until we hit the target time
-#         await called_once_a_day(chan)  # Call the helper function that sends the message
-#         tomorrow = datetime.combine(now.date() + timedelta(days=1), time(0))
-#         seconds = (tomorrow - now).total_seconds()  # Seconds until tomorrow (midnight)
-#         await asyncio.sleep(seconds)   # Sleep until tomorrow and then the loop will start a new iteration
+# load a string with date and time for next message
+def get_when():
+    nowdate = datetime.now().date()     # get todays date
+    today = nowdate.strftime("%Y-%m-%d")  # get todays date in format "YYYY-MM-DD"
+    tomorrow = (nowdate + timedelta(days=1)).strftime("%Y-%m-%d")   # get tomorows date in format "YYYY-MM-DD"
+    with open('CBotD/whenfile.csv', 'r') as whenfile:   # open a file
+        when = whenfile.readline()  # read first line and pass it into when variable
+    if when[:10] == today: # if when date is today
+        print('today:') # TODO: del later
+        return when
+    elif when[:10] == tomorrow:  # if when date is tomorrow
+        print('tomorrow:') # TODO: del later
+        return when
+    else:   # if when date isn't today nor tomorrow
+        print('rand when:') # TODO: del later
+        when = rand_when(today=True)    # generate a new datetime string
+        with open('CBotD/whenfile.csv', 'w') as whenfile:   # write it to the file
+            whenfile.write(when)
+        return when     # and return it
