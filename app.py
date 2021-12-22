@@ -68,6 +68,11 @@ class KogniClient(commands.Bot):
             if message.attachments != [] and message.channel.name == '👽︱kosmiczne-jaja':  # if message contains any attachments (e.g. pic, video, etc.) and is sent on that channel
                 await message.add_reaction('😂')  # add a baloon face reaction
 
+
+            #TODO smacznej kawusi jebać kapusi
+
+            #TODO księżyc i słonko na dobranoc i dzien dobry/hemlo
+
             # =====================================================
             # END OF on_message() method and class KogniClient
             # =====================================================
