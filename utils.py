@@ -44,10 +44,9 @@ async def bias_of_the_day(channel):
     when = get_when()    # get_when będzie i będzie odczytywać z pliku to when
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     print(when) # TODO: del later
-    print(datetime.now().date().strftime("%Y-%m-%d")) # print now date TODO: del later
     print(now) # TODO: del later
     if now == when: # if now (in string format "hh:mm") is when time
-        await channel.send('hejka tu <@!916014586786897921>') # send message    # TODO: PASS RANDOMLY GENERATED BIAS HERE
+        await channel.send(f'Dear ladies & gentlemans!\nI\'m glad to inform u that right now is {now}!!!') # send message    # TODO: PASS RANDOMLY GENERATED BIAS HERE
         with open('CBotD/whenfile.csv', 'w') as whenfile:   # write to the file
             whenfile.write(rand_when()) # datetime string with tomorrow date and random hour
 
@@ -63,14 +62,18 @@ def rand_when(today=False):
     delta = timedelta(days=1)   # date delta (set the date for tomorrow but if today=True, set it for today
     hh = random.randint(10, 18) # random hour between 10 and 18
     mm = random.randint(0, 59)  # random minute
-    if today:
-        delta = timedelta(days=0)   # set the date for today if needed (if today=True)
 
-        #this block if for generating random hour/minute that
+    if today:   # when today=True do the following:
         now_hour = datetime.now().time().hour    # take current hour
-        # if curren hour is between 10 and 18 h=current hour; else h=10
-        h = now_hour + 1 if 18 > now_hour >= 10 else 10
-        hh = random.randint(h, 18) # random hour between 10 and 18
+        if 9 < now_hour < 18:   # if current hour is between 10 and 18
+            delta = timedelta(days=0)  # set the date for today
+            hh = now_hour + 1   # don't generate random hour, set it for next hour instead (with random minutes)
+        else:   # if current hour is not between 10 and 18
+            if now_hour < 9:    # if it's before nine o'clock
+                delta = timedelta(days=0)   # set teh date for today
+            hh = 10 # and set it for 10 (with random minutes) next day (or today due to above line)
+            #this block if for generating random hour/minute that
+
     #       combine these: (          todays date +1  AND   random generated hour & minute )  and change it into str with format "YYYY-MM-DD HH:MM"
     when = datetime.combine(datetime.now().date() + delta, time(hour=hh, minute=mm)).strftime("%Y-%m-%d %H:%M")
     return when # return datetime string

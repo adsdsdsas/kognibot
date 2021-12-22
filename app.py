@@ -139,7 +139,7 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
 
 
     # a loop that makes bot send cognitive bias of the day (it's started in or_ready() method above in the KogniClient class)
-    @tasks.loop(seconds=30) # create a loop and run it every 60 seconds
+    @tasks.loop(seconds=60) # create a loop and run it every 60 seconds
     async def cognitive_bias_of_the_day():  # define a function
 
         # get a channel from these IDs
