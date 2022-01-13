@@ -143,6 +143,10 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     @commands.has_permissions(manage_messages=True)
     async def clear(ctx, amount = 100000):
         await kc.clear(ctx, amount)
+    @clear.error
+    async def clear_error(ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You don't have permissions!")
 
     @bot.command()
     async def kick(ctx):
@@ -150,10 +154,7 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
 
 
 
-    @clear.error
-    async def clear_error(ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have permissions!")
+
 
 
     # -----------------------------------------------
