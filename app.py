@@ -78,22 +78,13 @@ class KogniClient(commands.Bot):
             # =====================================================
 
 
-
-
-
 # =================================================================
-
-
-
 
 
 # load enviroment to use it to load BOT_TOKEN in the end of code
 load_dotenv()  # loads enviroment
 env_path = Path('.') / '.env'  # sets enviroment path as .env file path
 load_dotenv(dotenv_path=env_path)  # loads enviroment with new path (a DISCORD_BOT_TOKEN variable from .env file
-
-
-
 
 
 # MAIN PROGRAM
@@ -147,7 +138,22 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     async def login_logs(ctx):
         await kc.login_logs(ctx, bot)
 
+    # clearing messages
+    @bot.command(aliases=['purge', 'delete', 'c'])
+    @commands.has_permissions(manage_messages=True)
+    async def clear(ctx, amount = 100000):
+        await kc.clear(ctx, amount)
 
+    @bot.command()
+    async def kick(ctx):
+        await kc.kick(ctx)
+
+
+
+    @clear.error
+    async def clear_error(ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You don't have permissions!")
 
 
     # -----------------------------------------------

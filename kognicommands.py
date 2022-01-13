@@ -1,3 +1,4 @@
+import random
 from asyncio import sleep
 # now import our own modules:
 from Gw2 import Gw2
@@ -11,6 +12,8 @@ COMMAND_DICT = {  # list of all available commands with descriptions (used in $c
     '$credits': 'displays credits for KogniBot creators',
     '$wejsciowka': 'invites u to wejsciowka',
     '$build "name of specialization"': 'Shows SC link to specialization builds site',
+    '$guess': 'Lets u play a simple guessing game',
+    '$clear:' : 'Clear messages'
     '$login_logs': '?????'  # TODO: update the description of $login_logs command
 }
 
@@ -48,7 +51,18 @@ async def wejsciowka(ctx):
         'https://b.socrative.com/login/student/\nW polu room name proszę wpisać ANDRZEJ5101')  # send message (\n - new line)
     await ctx.send('POWODZENIA!!!')  # send message
 
+async def clear(ctx, amount):
+    if amount == 100000:
+        await ctx.send('Please enter an amount of messages you want to be cleared.')
+    else:
+        # try:
+        #     int(amount)
+        # except:
+        #     await ctx.send('Please enter a valid integer as amount.')
+        await ctx.channel.purge(limit=amount)
 
+async def kick(ctx):
+    await ctx.send('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 # ---------------------------------------------------
 # GW2 commands:
 
