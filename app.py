@@ -96,8 +96,8 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
 
     # a test command and how commands work
     @bot.command()  # change the function defined below to a bot command and add it to bot
-    async def elu(ctx, arg):  # a test command $elu "something"
-        await ctx.send(f'{arg}wina')  # send "something"wina
+    async def elu(ctx, *args):  # a test command $elu "something"
+        await ctx.send(f'{" ".join(args)}wina')  # send "something"wina
 
 
     # command $command-list
