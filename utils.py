@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from CBotD.cbotd_utils import rand_when, get_when
+from CBotD.cbotd_utils import rand_when, get_when, get_bias
 
 
 
@@ -42,19 +42,10 @@ async def deletemessage(ctx):
 
 # function that operates the cognitive bias of the day, run in cognitive_bias_of_the_day loop in app.py
 async def bias_of_the_day(channel):
-    when = get_when()    # get_when będzie i będzie odczytywać z pliku to when
+    when = get_when()    # read whe from the whenfile.csv and return it or generate new one if the date isn't today nor tomorrow
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    print(when) # TODO: del later
-    print(now) # TODO: del later
     if now == when: # if now (in string format "hh:mm") is when time
-        await channel.send(f'Dear ladies & gentlemans!\nI\'m glad to inform u that right now is {now}!!!') # send message    # TODO: PASS RANDOMLY GENERATED BIAS HERE
+        bias = get_bias()   # get a random bias
+        await channel.send(f"Todays Cognitive Bias of the Day is: {bias['bias']}\nBias category: {bias['group']}") # send message    # TODO: Pass wikipedia link and description here
         with open('CBotD/whenfile.csv', 'w') as whenfile:   # write to the file
             whenfile.write(rand_when()) # datetime string with tomorrow date and random hour
-
-        # i wsm chyba tyle
-        # jest pętla i ona sprawdza czy jest teraz ta data i godzina
-        # i jeśli jest to wysyła wiadomość i generuje nową datę i godzinę (jutro)
-        # teraz TODO: jak zrobić by oznaczało te błędy poznawcze, które już były
-        # np. log 15 ostatnich i update pliku o jedną linijkę i spradzanie czy w tym logu jest wylosowany błąd
-
-

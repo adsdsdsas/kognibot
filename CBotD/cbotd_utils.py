@@ -1,5 +1,4 @@
-import random, json
-import pandas as pd
+import random, requests, csv
 from datetime import datetime, time, timedelta
 
 
@@ -37,13 +36,10 @@ def get_when():
     with open('CBotD/whenfile.csv', 'r') as whenfile:   # open a file
         when = whenfile.readline()  # read first line and pass it into when variable
     if when[:10] == today: # if when date is today
-        print('today:') # TODO: del later
         return when
     elif when[:10] == tomorrow:  # if when date is tomorrow
-        print('tomorrow:') # TODO: del later
         return when
     else:   # if when date isn't today nor tomorrow
-        print('rand when:') # TODO: del later
         when = rand_when(today=True)    # generate a new datetime string
         with open('CBotD/whenfile.csv', 'w') as whenfile:   # write it to the file
             whenfile.write(when)
@@ -55,20 +51,63 @@ def get_when():
 
 # RANDOMLY GENERATE THE BIAS OF THE DAY
 def get_bias():
-    LINK = 'https://raw.githubusercontent.com/busterbenson/public/master/cognitive-bias-cheat-sheet.json'
-    my_table = pd.read_json(LINK) # orient=COLUMNS JAKO TAKO DZIAŁA KURWAAAAAA
-    my_table = my_table["children"]
-    frame = {
-        "too much": pd.Series(my_table[0], index=["name", "children"]),
-        "not enough": pd.Series(my_table[1], index=["name", "children"]),
-        "need to act": pd.Series(my_table[2], index=["name", "children"]),
-        "what should": pd.Series(my_table[3], index=["name", "children"])
+    LINK = 'https://raw.githubusercontent.com/busterbenson/public/master/cognitive-bias-cheat-sheet.json'   # link to the json file with cognitive biases
+
+    bias_json = requests.get(LINK)    # use requests library to get the file content
+    bias_dict = bias_json.json()    # convert the file content into a dictionary using json()
+
+    bias_list = []  # create an empty list
+
+    # and fill the list with dictionaries grouping biases in format:
+    #     {
+    #         'name': 'Description of group',
+    #         'children': [
+    #             {'name': 'bias1'}, {'name': 'bias2'}, {'name': 'bias...'}
+    #         ]
+    #     }
+    # there is 20 groups
+    for bias_category in bias_dict['children']:
+        for bias_group in bias_category['children']:
+            bias_list.append(bias_group)
+
+
+    # NOW GENERATE RANDOM BIAS:
+    used = []   # read all lines of usedbias.csv and create a list of them
+    with open('CBotD/usedbiases.csv', 'r') as usedfile:  # open a file
+        reader = csv.reader(usedfile)
+        for line in reader:
+            used.append(line[0])   # so now we have a list of already used biases
+
+    while True: # repeat until break
+        groupnb = random.randrange(len(bias_list)) # get random group number
+        group = bias_list[groupnb]  # and use it to get random group of biases
+        biasnb = random.randrange(len(group['children']))  # get another random number
+        bias = group['children'][biasnb]    # and use it to get random bias
+
+        if bias['name'] in used:    # if bias is already used
+            print('Oop- we needa generate another one!')
+            if len(used) > 180: # reset the list of used biases stored in usedbiases.csv if the amount of used biases reached 180 (there's 188 biases but in can change in the future)
+                used = []
+            pass    # continue the while loop (generate another one and check it)
+        else:   # if bias wasn't already used
+            used.append(bias['name'])   # add it to already used list
+            break   # and break the while loop
+
+    # after generating the new bias:
+
+    generated_bias = {  # prepare a dictionary to return later
+        'group': group['name'],
+        'bias': bias['name']
     }
-    new_frame = pd.DataFrame(frame)
-    print(new_frame)
+
+    # trying to web srap wikipedia page, without effects yet:
+    # page = requests.get('https://en.wikipedia.org/wiki/Confirmation_bias')
+    # print(page)
 
 
-    # my_table["categories"] = pd.json_normalize(my_table["children"])
+    # write updated used biases list to the file
+    with open('CBotD/usedbiases.csv', 'w') as usedfile:
+        writer = csv.writer(usedfile)
+        writer.writerows([line] for line in used)
 
-
-get_bias()  # TODO: delete later
+    return generated_bias   # and return the bias in the form of dictionary created above

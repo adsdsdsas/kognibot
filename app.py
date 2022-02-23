@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import json
 # now import our own modules:
 import kognicommands as kc
+from CBotD.cbotd_utils import get_bias
 
 
 # create a class KogniClient that inherits from commands.Bot class and add functions inside this KogniClient class
@@ -98,6 +99,14 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     @bot.command()  # change the function defined below to a bot command and add it to bot
     async def elu(ctx, *args):  # a test command $elu "something"
         await ctx.send(f'{" ".join(args)}wina')  # send "something"wina
+        # TODO: DELETE LATER OR NOT IDK
+
+
+    # a test command $bias to test how generating biases works
+    @bot.command()
+    async def bias(ctx):
+        await ctx.send(get_bias()['bias'])  # send random bias
+        # TODO: DELETE LATER OR NOT IDK
 
 
     # command $command-list
@@ -140,10 +149,10 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
 
     # a loop that makes bot send cognitive bias of the day (it's started in or_ready() method above in the KogniClient class)
     @tasks.loop(seconds=60) # create a loop and run it every 60 seconds
-    async def cognitive_bias_of_the_day():  # define a function
+    async def cognitive_bias_of_the_day():  # define a task loop function
 
         # get a channel from these IDs
-        channel = bot.get_guild(762767093661564961).get_channel(781633200522002452) # Kognitywistyka server ID, #admin-bot channel ID
+        channel = bot.get_guild(762767093661564961).get_channel(821088798041440257) # Kognitywistyka server ID, #admin-spam channel ID
         await kc.bias_of_the_day_pass_channel(channel)  # pass channel to the function
 
 
