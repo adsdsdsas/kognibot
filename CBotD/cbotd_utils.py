@@ -1,5 +1,6 @@
 import random, requests, csv
 from datetime import datetime, time, timedelta
+from bs4 import BeautifulSoup
 
 
 
@@ -93,16 +94,13 @@ def get_bias():
             used.append(bias['name'])   # add it to already used list
             break   # and break the while loop
 
+
     # after generating the new bias:
 
     generated_bias = {  # prepare a dictionary to return later
         'group': group['name'],
         'bias': bias['name']
     }
-
-    # trying to web srap wikipedia page, without effects yet:
-    # page = requests.get('https://en.wikipedia.org/wiki/Confirmation_bias')
-    # print(page)
 
 
     # write updated used biases list to the file
@@ -111,3 +109,46 @@ def get_bias():
         writer.writerows([line] for line in used)
 
     return generated_bias   # and return the bias in the form of dictionary created above
+
+
+
+
+
+# WEB SCRAP THE FIRST CHAPTER OF WIKIPEDIA ARTICLE
+def get_wiki(bias={'bias': 'Placebo'}): # ={'bias': 'Confirmation bias'}
+    LINK = f"https://en.wikipedia.org/wiki/{'_'.join(bias['bias'].split())}"    # change spaces to _ in link
+
+    page = requests.get(LINK)   # get the page from link
+
+    soup = BeautifulSoup(page.content, 'html.parser')   # create a soup using the page
+
+    locator = 'nav.mw-portlet-lang div.vector-menu-content ul.vector-menu-content-list li.interlanguage-link a'
+    lang_list = soup.select(locator)    # locate the language table
+
+    for lang in lang_list:  # if there is polish wersion of the article
+        if 'pl' in lang.attrs.get('lang', []) and lang.attrs.get('lang', []) != 'en-simple':
+            LINK = lang.attrs.get('href')   # set the new ling
+            page = requests.get(LINK)  # get the page from link
+
+            soup = BeautifulSoup(page.content, 'html.parser')  # create a new soup using the page
+            bias['bias'] = soup.select_one('h1.firstHeading').contents[0].format_string()   # change bias name for the polish one
+
+    locator = 'div.mw-parser-output p'  # setting the locator - what tagsto search in HTML code of the page
+    my_desc_list = soup.select(locator) # creating a list of <p> tags in the beggining of wiki page
+
+    for p in my_desc_list:  # eliminate the first empty <p> tag if exist
+        if "mw-empty-elt" in p.attrs.get("class", []):
+            my_desc_list.remove(p)
+
+
+    # exception in cause when the bias name doesn't match any wikipedia article (the bias is not described on wiki)
+    bias_description = ""
+    try:    # try to connect all strings
+        for string in my_desc_list[0].strings:  # join all strings into one long string
+            bias_description += "".join(string)
+    except IndexError:  # if there's no string inside my_desc_list (because LINK redirected to error wiki page)
+        print(f"Error: not foud article named {bias['bias']}")
+        return False # inform the calling function that it failed to generate the wikipedia string
+
+    # print(f"Todays Cognitive Bias of the Day is: **{bias['bias']}**\nBias description:\n\n{bias_description} \n {LINK}")
+    return f"Todays Cognitive Bias of the Day is: **{bias['bias']}**\nBias description:\n\n{bias_description} \n {LINK}"

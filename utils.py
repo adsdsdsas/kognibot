@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from CBotD.cbotd_utils import rand_when, get_when, get_bias
+from CBotD.cbotd_utils import rand_when, get_when, get_bias, get_wiki
 
 
 
@@ -45,7 +45,12 @@ async def bias_of_the_day(channel):
     when = get_when()    # read whe from the whenfile.csv and return it or generate new one if the date isn't today nor tomorrow
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     if now == when: # if now (in string format "hh:mm") is when time
-        bias = get_bias()   # get a random bias
-        await channel.send(f"Todays Cognitive Bias of the Day is: {bias['bias']}\nBias category: {bias['group']}") # send message    # TODO: Pass wikipedia link and description here
+        while True:
+            bias = get_bias()  # get a random bias
+            wiki_string = get_wiki(bias)
+            if wiki_string:  # if get_wiki() generated a wiki string, send it and break the while loop
+                await channel.send(wiki_string)
+                await channel.last_message.edit(suppress=True)  # supress embed of the wiki link in last message
+                break  # if get_wiki() returned False, continue the loop (generate new bias and wiki string)
         with open('CBotD/whenfile.csv', 'w') as whenfile:   # write to the file
             whenfile.write(rand_when()) # datetime string with tomorrow date and random hour

@@ -95,18 +95,10 @@ if __name__ == '__main__':  # if app.py is run directly (not imported to other m
     # NOW WE DEFINE OUR COMMANDS
     # -----------------------------------------------
 
-    # a test command and how commands work
+    # A TEST COMMAND AND HOW COMMANDS WORK
     @bot.command()  # change the function defined below to a bot command and add it to bot
     async def elu(ctx, *args):  # a test command $elu "something"
         await ctx.send(f'{" ".join(args)}wina')  # send "something"wina
-        # TODO: DELETE LATER OR NOT IDK
-
-
-    # a test command $bias to test how generating biases works
-    @bot.command()
-    async def bias(ctx):
-        await ctx.send(get_bias()['bias'])  # send random bias
-        # TODO: DELETE LATER OR NOT IDK
 
 
     # command $command-list
